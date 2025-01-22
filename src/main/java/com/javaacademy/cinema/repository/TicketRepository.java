@@ -22,13 +22,13 @@ public class TicketRepository {
     public Optional<Ticket> findById(Integer id) {
         String sql = "select * from ticket where id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::mapToProduct, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::mapToTicket, id));
         } catch (EmptyResultDataAccessException e) {
             return empty();
         }
     }
 
-    private Ticket mapToProduct(ResultSet rs, int rowNum) throws SQLException {
+    private Ticket mapToTicket(ResultSet rs, int rowNum) throws SQLException {
         Ticket ticket = new Ticket();
         ticket.setId(rs.getInt("id"));
         if (rs.getString("place_id") != null) {

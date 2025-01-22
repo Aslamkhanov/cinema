@@ -20,13 +20,13 @@ public class MovieRepository {
     public Optional<Movie> findById(Integer id) {
         String sql = "select * from movie where id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::mapToProduct, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::mapToMovie, id));
         } catch (EmptyResultDataAccessException e) {
             return empty();
         }
     }
 
-    private Movie mapToProduct(ResultSet rs, int rowNum) throws SQLException {
+    private Movie mapToMovie(ResultSet rs, int rowNum) throws SQLException {
         Movie movie = new Movie();
         movie.setId(rs.getInt("id"));
         movie.setName(rs.getString("name"));

@@ -23,13 +23,13 @@ public class SessionRepository {
     public Optional<Session> findById(Integer id) {
         String sql = "select * from session where id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::mapToProduct, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, this::mapToSession, id));
         } catch (EmptyResultDataAccessException e) {
             return empty();
         }
     }
 
-    private Session mapToProduct(ResultSet rs, int rowNum) throws SQLException {
+    private Session mapToSession(ResultSet rs, int rowNum) throws SQLException {
         Session session = new Session();
         session.setId(rs.getInt("id"));
         Timestamp timestamp = rs.getTimestamp("date_time");
