@@ -39,8 +39,8 @@ public class SessionRepository {
         }
         session.setPrice(rs.getBigDecimal("price"));
         if (rs.getString("movie_id") != null) {
-            Integer producerId = Integer.valueOf(rs.getString("movie_id"));
-            session.setMovieId(movieRepository.findById(producerId).orElse(null));
+            Integer movieId = Integer.valueOf(rs.getString("movie_id"));
+            session.setMovieId(movieRepository.findById(movieId).orElse(null));
         }
         return session;
     }

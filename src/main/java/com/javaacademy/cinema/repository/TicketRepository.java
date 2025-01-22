@@ -31,13 +31,13 @@ public class TicketRepository {
     private Ticket mapToTicket(ResultSet rs, int rowNum) throws SQLException {
         Ticket ticket = new Ticket();
         ticket.setId(rs.getInt("id"));
-        if (rs.getString("place_id") != null) {
-            Integer producerId = Integer.valueOf(rs.getString("place_id"));
-            ticket.setPlaceId(placeRepository.findById(producerId).orElse(null));
-        }
         if (rs.getString("session_id") != null) {
-            Integer producerId = Integer.valueOf(rs.getString("session_id"));
-            ticket.setSessionId(sessionRepository.findById(producerId).orElse(null));
+            Integer sessionId = Integer.valueOf(rs.getString("session_id"));
+            ticket.setSessionId(sessionRepository.findById(sessionId).orElse(null));
+        }
+        if (rs.getString("place_id") != null) {
+            Integer placeId = Integer.valueOf(rs.getString("place_id"));
+            ticket.setPlaceId(placeRepository.findById(placeId).orElse(null));
         }
         ticket.setBoughtOrNot(rs.getString("is_bought"));
         return ticket;
