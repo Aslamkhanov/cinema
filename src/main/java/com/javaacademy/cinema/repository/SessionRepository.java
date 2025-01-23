@@ -8,8 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -32,11 +30,7 @@ public class SessionRepository {
     private Session mapToSession(ResultSet rs, int rowNum) throws SQLException {
         Session session = new Session();
         session.setId(rs.getInt("id"));
-        Timestamp timestamp = rs.getTimestamp("date_time");
-        if (timestamp != null) {
-            LocalDateTime localDateTime = timestamp.toLocalDateTime();
-            session.setDateTime(localDateTime);
-        }
+        session.setDateTime(rs.getTimestamp("date_time").toLocalDateTime());
         session.setPrice(rs.getBigDecimal("price"));
         if (rs.getString("movie_id") != null) {
             Integer movieId = Integer.valueOf(rs.getString("movie_id"));
