@@ -33,11 +33,11 @@ public class TicketRepository {
         ticket.setId(rs.getInt("id"));
         if (rs.getString("session_id") != null) {
             Integer sessionId = Integer.valueOf(rs.getString("session_id"));
-            ticket.setSessionId(sessionRepository.findById(sessionId).orElse(null));
+            ticket.setSession(sessionRepository.findById(sessionId).orElse(null));
         }
         if (rs.getString("place_id") != null) {
             Integer placeId = Integer.valueOf(rs.getString("place_id"));
-            ticket.setPlaceId(placeRepository.findById(placeId).orElse(null));
+            ticket.setPlace(placeRepository.findById(placeId).orElse(null));
         }
         ticket.setBoughtOrNot(rs.getString("is_bought"));
         return ticket;

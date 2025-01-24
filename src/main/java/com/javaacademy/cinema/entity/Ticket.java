@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Ticket {
     private Integer id;
-    private Session sessionId;
-    private Place placeId;
+    private Session session;
+    private Place place;
     private String boughtOrNot;
 }

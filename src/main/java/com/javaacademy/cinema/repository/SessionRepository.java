@@ -34,7 +34,7 @@ public class SessionRepository {
         session.setPrice(rs.getBigDecimal("price"));
         if (rs.getString("movie_id") != null) {
             Integer movieId = Integer.valueOf(rs.getString("movie_id"));
-            session.setMovieId(movieRepository.findById(movieId).orElse(null));
+            session.setMovie(movieRepository.findById(movieId).orElse(null));
         }
         return session;
     }

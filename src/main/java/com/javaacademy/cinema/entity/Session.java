@@ -10,5 +10,5 @@ public class Session {
     private Integer id;
     private LocalDateTime dateTime;
     private BigDecimal price;
-    private Movie movieId;
+    private Movie movie;
 }
