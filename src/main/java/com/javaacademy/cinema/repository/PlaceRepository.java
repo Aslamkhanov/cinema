@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -16,6 +17,11 @@ import static java.util.Optional.empty;
 @RequiredArgsConstructor
 public class PlaceRepository {
     private final JdbcTemplate jdbcTemplate;
+
+    public List<Place> getAllPlaces() {
+        String sql = "select number from place";
+        return jdbcTemplate.query(sql, this::mapToPlace);
+    }
 
     public Optional<Place> findById(Integer id) {
         String sql = "select * from place where id = ?";

@@ -18,6 +18,6 @@ create table if not exists ticket(
 	id serial primary key,
 	place_id bigint,
 	session_id bigint,
-	is_bought varchar(20),
+	is_bought boolean not null,
 	constraint fk_place foreign key (place_id) references place (id),
 	constraint fk_session foreign key (session_id) references "session" (id));

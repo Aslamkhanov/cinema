@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -17,6 +18,21 @@ import static java.util.Optional.empty;
 public class SessionRepository {
     private final JdbcTemplate jdbcTemplate;
     private final MovieRepository movieRepository;
+
+    public Session createSession(Session session) {
+        String sql = "insert into session (movie_id, date_time, price) values(?, ?, ?) returning id";
+        Integer sessionId = jdbcTemplate.queryForObject(sql,
+                Integer.class,
+                session.getMovie().getId(),
+                session.getDateTime(),
+                session.getPrice());
+        return findById(sessionId).get();
+    }
+
+    public List<Session> getAllSession() {
+        String sql = "select * from session";
+        return jdbcTemplate.query(sql, this::mapToSession);
+    }
 
     public Optional<Session> findById(Integer id) {
         String sql = "select * from session where id = ?";

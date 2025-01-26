@@ -7,5 +7,5 @@ public class Ticket {
     private Integer id;
     private Session session;
     private Place place;
-    private String boughtOrNot;
+    private Boolean isBought;
 }

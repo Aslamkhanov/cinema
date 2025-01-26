@@ -20,16 +20,14 @@ public class MovieRepository {
 
     public Movie createMovie(Movie movie) {
         String sql = "insert into movie (name, description) values(?, ?) returning id";
-        Integer generatedId = jdbcTemplate.queryForObject(sql, new Object[]{
+        Integer generatedId = jdbcTemplate.queryForObject(sql,
+                Integer.class,
                 movie.getName(),
-                movie.getDescription()
-        }, Integer.class);
-
-        Optional<Movie> optionalMovie = findById(generatedId);
-        return optionalMovie.get();
+                movie.getDescription());
+        return findById(generatedId).get();
     }
 
-    public List<Movie> selectAll() {
+    public List<Movie> getAllMovie() {
         String sql = "select * from movie";
         return jdbcTemplate.query(sql, this::mapToMovie);
     }
