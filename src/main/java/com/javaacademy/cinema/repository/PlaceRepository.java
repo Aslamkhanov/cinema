@@ -1,5 +1,6 @@
 package com.javaacademy.cinema.repository;
 
+import com.javaacademy.cinema.entity.Movie;
 import com.javaacademy.cinema.entity.Place;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,7 +19,7 @@ import static java.util.Optional.empty;
 public class PlaceRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Place> getAllPlaces() {
+    public List<Place> findAllPlaces() {
         String sql = "select number from place";
         return jdbcTemplate.query(sql, this::mapToPlace);
     }

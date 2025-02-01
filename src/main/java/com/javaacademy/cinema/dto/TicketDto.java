@@ -1,5 +1,7 @@
-package com.javaacademy.cinema.entity;
+package com.javaacademy.cinema.dto;
 
+import com.javaacademy.cinema.entity.Place;
+import com.javaacademy.cinema.entity.Session;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Ticket {
-    private Integer id;
+public class TicketDto {
     private Session session;
     private Place place;
     private Boolean isBought;

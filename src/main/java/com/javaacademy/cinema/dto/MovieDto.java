@@ -1,4 +1,4 @@
-package com.javaacademy.cinema.entity;
+package com.javaacademy.cinema.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Movie {
-    private Integer id;
+public class MovieDto {
     private String name;
     private String description;
 }
