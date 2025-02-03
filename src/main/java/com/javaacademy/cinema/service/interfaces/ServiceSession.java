@@ -1,4 +1,4 @@
-package com.javaacademy.cinema.service.admin.interfaces;
+package com.javaacademy.cinema.service.interfaces;
 
 import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.entity.Session;
@@ -6,11 +6,11 @@ import com.javaacademy.cinema.entity.Session;
 import java.util.List;
 import java.util.Optional;
 
-public interface AdminServiceSession {
+public interface ServiceSession {
 
     Session createSession(SessionDto sessionDto);
 
-    List<Session> getAllSession();
+    List<SessionDto> getAllSession();
 
     Optional<Session> findById(Integer id);
 }

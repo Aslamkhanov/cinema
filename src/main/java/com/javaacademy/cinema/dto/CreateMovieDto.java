@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MovieDto {
-    private Integer id;
+public class CreateMovieDto {
     private String name;
     private String description;
 }

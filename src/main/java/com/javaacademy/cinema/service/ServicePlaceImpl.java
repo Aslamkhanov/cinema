@@ -1,8 +1,8 @@
-package com.javaacademy.cinema.service.admin;
+package com.javaacademy.cinema.service;
 
 import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.repository.PlaceRepository;
-import com.javaacademy.cinema.service.admin.interfaces.AdminServicePlace;
+import com.javaacademy.cinema.service.interfaces.ServicePlace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class AdminServicePlaceImpl implements AdminServicePlace {
+public class ServicePlaceImpl implements ServicePlace {
     private final PlaceRepository repository;
 
     @Override

@@ -1,19 +1,20 @@
-package com.javaacademy.cinema.service.admin;
+package com.javaacademy.cinema.service;
 
 import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.entity.Session;
 import com.javaacademy.cinema.mapper.MapperSession;
 import com.javaacademy.cinema.repository.SessionRepository;
-import com.javaacademy.cinema.service.admin.interfaces.AdminServiceSession;
+import com.javaacademy.cinema.service.interfaces.ServiceSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class AdminServiceSessionImpl implements AdminServiceSession {
+public class ServiceSessionImpl implements ServiceSession {
     private final SessionRepository repository;
     private final MapperSession mapperSession;
 
@@ -24,8 +25,11 @@ public class AdminServiceSessionImpl implements AdminServiceSession {
     }
 
     @Override
-    public List<Session> getAllSession() {
-        return repository.getAllSession();
+    public List<SessionDto> getAllSession() {
+        return repository.getAllSession()
+                .stream()
+                .map(mapperSession::convertSessionDto)
+                .collect(Collectors.toList());
     }
 
     @Override

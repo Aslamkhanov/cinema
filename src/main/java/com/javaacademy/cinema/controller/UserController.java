@@ -2,9 +2,9 @@ package com.javaacademy.cinema.controller;
 
 import com.javaacademy.cinema.dto.*;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
-import com.javaacademy.cinema.service.user.interfaces.UserServiceMovie;
-import com.javaacademy.cinema.service.user.interfaces.UserServiceSession;
-import com.javaacademy.cinema.service.user.interfaces.UserServiceTicket;
+import com.javaacademy.cinema.service.interfaces.ServiceMovie;
+import com.javaacademy.cinema.service.interfaces.ServiceSession;
+import com.javaacademy.cinema.service.interfaces.ServiceTicket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
-    private final UserServiceMovie serviceMovie;
-    private final UserServiceSession serviceSession;
-    private final UserServiceTicket serviceTicket;
+    private final ServiceMovie serviceMovie;
+    private final ServiceSession serviceSession;
+    private final ServiceTicket serviceTicket;
 
     @GetMapping("/movie")
-    public ResponseEntity<List<MovieDto>> getAllMovie() {
+    public ResponseEntity<List<CreateMovieDto>> getAllMovie() {
         return ResponseEntity.ok(serviceMovie.getAllMovie());
     }
 
