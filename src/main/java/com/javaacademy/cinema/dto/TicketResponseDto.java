@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Builder
-public class TicketResponse {
+public class TicketResponseDto {
     @JsonProperty("ticket_id")
     private Integer ticketId;
     @JsonProperty("place_name")

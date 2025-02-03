@@ -1,7 +1,6 @@
 package com.javaacademy.cinema.service;
 
 import com.javaacademy.cinema.dto.MovieDto;
-import com.javaacademy.cinema.dto.CreateMovieDto;
 import com.javaacademy.cinema.entity.Movie;
 import com.javaacademy.cinema.mapper.MapperMovie;
 import com.javaacademy.cinema.repository.MovieRepository;
@@ -20,22 +19,22 @@ public class ServiceMovieImpl implements ServiceMovie {
     private final MapperMovie mapperMovie;
 
     @Override
-    public MovieDto saveMovie(CreateMovieDto createMovieDto) {
-        Movie movie = mapperMovie.convertMovie(createMovieDto);
+    public MovieDto saveMovie(MovieDto MovieDto) {
+        Movie movie = mapperMovie.convertMovie(MovieDto);
         movieRepository.createMovie(movie);
-        return mapperMovie.convertMovieDto(movie);
+        return MovieDto;
     }
 
     @Override
-    public List<CreateMovieDto> getAllMovie() {
+    public List<MovieDto> getAllMovie() {
         return movieRepository.getAllMovie()
                 .stream()
-                .map(mapperMovie::convertCreateMovieDto)
+                .map(mapperMovie::convertMovieDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<CreateMovieDto> findById(Integer id) {
-        return movieRepository.findById(id).map(mapperMovie::convertCreateMovieDto);
+    public Optional<MovieDto> findById(Integer id) {
+        return movieRepository.findById(id).map(mapperMovie::convertMovieDto);
     }
 }

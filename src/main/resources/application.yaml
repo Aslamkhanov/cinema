@@ -4,3 +4,7 @@ spring:
     username: postgres
     password: MagaR223
     driver-class-name: org.postgresql.Driver
+
+app:
+  admin:
+    token: secretadmin123

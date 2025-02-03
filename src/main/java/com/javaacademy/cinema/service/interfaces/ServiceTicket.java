@@ -1,7 +1,7 @@
 package com.javaacademy.cinema.service.interfaces;
 
 import com.javaacademy.cinema.dto.TicketDto;
-import com.javaacademy.cinema.dto.TicketResponse;
+import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.entity.Ticket;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
@@ -22,5 +22,5 @@ public interface ServiceTicket {
 
     void createTicketsForSession(Integer sessionId, List<Place> places);
 
-    TicketResponse bookTicket(Integer sessionId, String placeName) throws TicketAlreadyBookedException;
+    TicketResponseDto bookTicket(Integer sessionId, String placeName) throws TicketAlreadyBookedException;
 }

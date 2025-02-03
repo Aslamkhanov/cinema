@@ -1,11 +1,11 @@
 package com.javaacademy.cinema.repository;
 
-import com.javaacademy.cinema.dto.TicketResponse;
+import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.entity.Ticket;
+import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -31,11 +31,13 @@ public class TicketRepository {
                 ticket.getPlace().getId(),
                 ticket.getSession().getId(),
                 ticket.getIsBought());
-        return findById(ticketId).get();
+        ticket.setId(ticketId);
+        return ticket;
     }
 
-    public void statusIsBought(Integer ticketId) throws TicketAlreadyBookedException {
-        Ticket ticket = findById(ticketId).get();
+    public void changeStatus(Integer ticketId) throws EntityNotFoundException, TicketAlreadyBookedException {
+        Ticket ticket = findById(ticketId)
+                .orElseThrow(() -> new EntityNotFoundException("Билет с id " + ticketId + " не найден"));
         if (ticket.getIsBought()) {
             throw new TicketAlreadyBookedException("Билет уже куплен");
         }
@@ -61,6 +63,7 @@ public class TicketRepository {
             return empty();
         }
     }
+
     public void createTicketsForSession(Integer sessionId, List<Place> places) {
         String sql = "INSERT INTO ticket (place_id, session_id, is_bought) VALUES (?, ?, false)";
         for (Place place : places) {
@@ -68,7 +71,8 @@ public class TicketRepository {
         }
     }
 
-    public TicketResponse bookTicket(Integer sessionId, String placeName) throws TicketAlreadyBookedException {
+    public TicketResponseDto bookTicket(Integer sessionId, String placeName)
+            throws TicketAlreadyBookedException, EntityNotFoundException {
         String sql = "SELECT id, is_bought FROM ticket WHERE session_id = ? AND place_name = ?";
         try {
             Ticket ticket = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
@@ -77,7 +81,7 @@ public class TicketRepository {
                 t.setIsBought(rs.getBoolean("is_bought"));
                 return t;
             }, sessionId, placeName);
-            statusIsBought(ticket.getId());
+            changeStatus(ticket.getId());
             String responseSql = """
                     SELECT t.id, p.name AS place_name, m.name AS movie_name, s.date
                     FROM ticket t
@@ -86,7 +90,7 @@ public class TicketRepository {
                     JOIN movie m ON s.movie_id = m.id
                     WHERE t.id = ?""";
             return jdbcTemplate.queryForObject(responseSql, (rs, rowNum) -> {
-                TicketResponse response = new TicketResponse();
+                TicketResponseDto response = new TicketResponseDto();
                 response.setTicketId(rs.getInt("id"));
                 response.setPlaceName(rs.getString("place_name"));
                 response.setMovieName(rs.getString("movie_name"));
@@ -104,11 +108,11 @@ public class TicketRepository {
         ticket.setId(rs.getInt("id"));
         if (rs.getString("session_id") != null) {
             Integer sessionId = Integer.valueOf(rs.getString("session_id"));
-            ticket.setSession(sessionRepository.findById(sessionId).orElse(null));
+            sessionRepository.findById(sessionId).ifPresent(ticket::setSession);
         }
         if (rs.getString("place_id") != null) {
             Integer placeId = Integer.valueOf(rs.getString("place_id"));
-            ticket.setPlace(placeRepository.findById(placeId).orElse(null));
+            placeRepository.findById(placeId).ifPresent(ticket::setPlace);
         }
         ticket.setIsBought(rs.getBoolean("is_bought"));
         return ticket;

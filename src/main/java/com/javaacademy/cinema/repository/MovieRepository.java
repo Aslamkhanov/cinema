@@ -24,7 +24,8 @@ public class MovieRepository {
                 Integer.class,
                 movie.getName(),
                 movie.getDescription());
-        return findById(generatedId).get();
+        movie.setId(generatedId);
+        return movie;
     }
 
     public List<Movie> getAllMovie() {

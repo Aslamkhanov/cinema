@@ -1,9 +1,10 @@
 package com.javaacademy.cinema.service;
 
 import com.javaacademy.cinema.dto.TicketDto;
-import com.javaacademy.cinema.dto.TicketResponse;
+import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.entity.Ticket;
+import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
 import com.javaacademy.cinema.mapper.MapperTicket;
 import com.javaacademy.cinema.repository.TicketRepository;
@@ -30,8 +31,8 @@ public class ServiceTicketImpl implements ServiceTicket {
     @Override
     public void statusIsBought(Integer ticketId) {
         try {
-            repository.statusIsBought(ticketId);
-        } catch (TicketAlreadyBookedException e) {
+            repository.changeStatus(ticketId);
+        } catch (TicketAlreadyBookedException | EntityNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
@@ -63,7 +64,11 @@ public class ServiceTicketImpl implements ServiceTicket {
     }
 
     @Override
-    public TicketResponse bookTicket(Integer sessionId, String placeName) throws TicketAlreadyBookedException {
-        return repository.bookTicket(sessionId, placeName);
+    public TicketResponseDto bookTicket(Integer sessionId, String placeName) throws TicketAlreadyBookedException {
+        try {
+            return repository.bookTicket(sessionId, placeName);
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

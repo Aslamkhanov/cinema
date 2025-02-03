@@ -26,7 +26,8 @@ public class SessionRepository {
                 session.getMovie().getId(),
                 session.getDateTime(),
                 session.getPrice());
-        return findById(sessionId).get();
+        session.setId(sessionId);
+        return session;
     }
 
     public List<Session> getAllSession() {
@@ -48,9 +49,10 @@ public class SessionRepository {
         session.setId(rs.getInt("id"));
         session.setDateTime(rs.getTimestamp("date_time").toLocalDateTime());
         session.setPrice(rs.getBigDecimal("price"));
+
         if (rs.getString("movie_id") != null) {
-            Integer movieId = Integer.valueOf(rs.getString("movie_id"));
-            session.setMovie(movieRepository.findById(movieId).orElse(null));
+            Integer movieId =Integer.parseInt(rs.getString("movie_id"));
+           movieRepository.findById(movieId).ifPresent(session::setMovie);
         }
         return session;
     }

@@ -1,7 +1,9 @@
 package com.javaacademy.cinema.service;
 
+import com.javaacademy.cinema.dto.GetSessionDto;
 import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.entity.Session;
+import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.mapper.MapperSession;
 import com.javaacademy.cinema.repository.SessionRepository;
 import com.javaacademy.cinema.service.interfaces.ServiceSession;
@@ -19,16 +21,16 @@ public class ServiceSessionImpl implements ServiceSession {
     private final MapperSession mapperSession;
 
     @Override
-    public Session createSession(SessionDto sessionDto) {
-        Session session = mapperSession.convertSession(sessionDto);
+    public Session createSession(SessionDto sessionDto) throws EntityNotFoundException {
+        Session session = mapperSession.toEntitySession(sessionDto);
         return repository.createSession(session);
     }
 
     @Override
-    public List<SessionDto> getAllSession() {
+    public List<GetSessionDto> getAllSession() {
         return repository.getAllSession()
                 .stream()
-                .map(mapperSession::convertSessionDto)
+                .map(mapperSession::toGetSessionDto)
                 .collect(Collectors.toList());
     }
 

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class TicketRequest {
+public class TicketRequestDto {
     @JsonProperty("session_id")
     private Integer sessionId;
     @JsonProperty("place_name")

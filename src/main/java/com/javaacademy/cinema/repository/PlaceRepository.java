@@ -1,6 +1,5 @@
 package com.javaacademy.cinema.repository;
 
-import com.javaacademy.cinema.entity.Movie;
 import com.javaacademy.cinema.entity.Place;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;

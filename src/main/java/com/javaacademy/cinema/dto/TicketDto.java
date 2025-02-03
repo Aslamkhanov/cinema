@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TicketDto {
+    private Integer id;
     private Session session;
     private Place place;
     private Boolean isBought;
