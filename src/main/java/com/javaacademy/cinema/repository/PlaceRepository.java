@@ -19,7 +19,7 @@ public class PlaceRepository {
     private final JdbcTemplate jdbcTemplate;
 
     public List<Place> findAllPlaces() {
-        String sql = "select number from place";
+        String sql = "select * from place";
         return jdbcTemplate.query(sql, this::mapToPlace);
     }
 

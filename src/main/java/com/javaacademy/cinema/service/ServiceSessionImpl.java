@@ -2,11 +2,14 @@ package com.javaacademy.cinema.service;
 
 import com.javaacademy.cinema.dto.GetSessionDto;
 import com.javaacademy.cinema.dto.SessionDto;
+import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.entity.Session;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.mapper.MapperSession;
 import com.javaacademy.cinema.repository.SessionRepository;
+import com.javaacademy.cinema.service.interfaces.ServicePlace;
 import com.javaacademy.cinema.service.interfaces.ServiceSession;
+import com.javaacademy.cinema.service.interfaces.ServiceTicket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +22,22 @@ import java.util.stream.Collectors;
 public class ServiceSessionImpl implements ServiceSession {
     private final SessionRepository repository;
     private final MapperSession mapperSession;
+    private final ServicePlace servicePlace;
+    private final ServiceTicket serviceTicket;
 
     @Override
-    public Session createSession(SessionDto sessionDto) throws EntityNotFoundException {
+    public void createSessions(SessionDto sessionDto) throws EntityNotFoundException {
+        SessionDto newSessionDto = saveSession(sessionDto);
+        Session newSession = mapperSession.toEntitySession(newSessionDto);
+        List<Place> places = servicePlace.findAllPlaces();
+        serviceTicket.createTicketsForSession(newSession.getId(), places);
+    }
+
+    @Override
+    public SessionDto saveSession(SessionDto sessionDto) throws EntityNotFoundException {
         Session session = mapperSession.toEntitySession(sessionDto);
-        return repository.createSession(session);
+        Session newSession = repository.createSession(session);
+        return mapperSession.toSessionDto(newSession);
     }
 
     @Override

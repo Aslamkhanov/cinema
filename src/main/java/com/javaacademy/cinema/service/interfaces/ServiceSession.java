@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ServiceSession {
+    void createSessions(SessionDto sessionDto) throws EntityNotFoundException;
 
-    Session createSession(SessionDto sessionDto) throws EntityNotFoundException;
+    SessionDto saveSession(SessionDto sessionDto) throws EntityNotFoundException;
 
     List<GetSessionDto> getAllSession();
 

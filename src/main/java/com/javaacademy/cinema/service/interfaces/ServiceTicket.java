@@ -13,6 +13,8 @@ public interface ServiceTicket {
     Ticket createTicket(TicketDto ticketDto);
 
     void statusIsBought(Integer ticketId);
+    List<String> findFreePlaces(Integer sessionId);
+    List<Ticket> findAllTickets();
 
     List<TicketDto> findTicketsBoughtTrue(Integer sessionId);
 

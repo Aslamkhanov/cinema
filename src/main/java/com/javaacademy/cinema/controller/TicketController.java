@@ -19,11 +19,10 @@ public class TicketController {
     private final ConfigService configService;
 
     @GetMapping("/saled")
-    public ResponseEntity<?> getAllBoughtTickets(@RequestParam Integer sessionId,
-                                                 @RequestHeader(value = "user-token") String token) {
+    public ResponseEntity<?> getAllBoughtTickets(@RequestHeader(value = "user-token") String token) {
         try {
             configService.admin(token);
-            return ResponseEntity.ok(serviceTicket.findTicketsBoughtTrue(sessionId));
+            return ResponseEntity.ok(serviceTicket.findAllTickets());
         } catch (AdminNotFoundException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

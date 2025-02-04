@@ -21,8 +21,8 @@ public class ServiceMovieImpl implements ServiceMovie {
     @Override
     public MovieDto saveMovie(MovieDto MovieDto) {
         Movie movie = mapperMovie.convertMovie(MovieDto);
-        movieRepository.createMovie(movie);
-        return MovieDto;
+        Movie saveMovie = movieRepository.createMovie(movie);
+        return mapperMovie.convertMovieDto(saveMovie);
     }
 
     @Override

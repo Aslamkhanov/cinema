@@ -3,10 +3,9 @@ package com.javaacademy.cinema.controller;
 import com.javaacademy.cinema.dto.GetSessionDto;
 import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.dto.TicketDto;
-import com.javaacademy.cinema.entity.Place;
-import com.javaacademy.cinema.entity.Session;
 import com.javaacademy.cinema.exception.AdminNotFoundException;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
+import com.javaacademy.cinema.mapper.MapperSession;
 import com.javaacademy.cinema.service.interfaces.ConfigService;
 import com.javaacademy.cinema.service.interfaces.ServicePlace;
 import com.javaacademy.cinema.service.interfaces.ServiceSession;
@@ -24,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SessionController {
     private final ServiceSession serviceSession;
-    private final ServicePlace servicePlace;
     private final ServiceTicket serviceTicket;
     private final ConfigService configService;
 
@@ -34,11 +32,8 @@ public class SessionController {
             throws EntityNotFoundException {
         try {
             configService.admin(token);
-            Session newSession = serviceSession.createSession(sessionDto);
-            List<Place> places = servicePlace.findAllPlaces();
-            serviceTicket.createTicketsForSession(newSession.getId(), places);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(newSession);
+            serviceSession.createSessions(sessionDto);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (AdminNotFoundException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -50,11 +45,12 @@ public class SessionController {
     }
 
     @GetMapping("/{sessionId}/free-place")
-    public ResponseEntity<List<TicketDto>> getFreePlacesForSession(@PathVariable Integer sessionId) {
-        List<TicketDto> sessionTickets = serviceTicket.findTicketsBoughtFalse(sessionId);
-        if (sessionTickets == null) {
+    public ResponseEntity<List<String>> getFreePlacesForSession(@PathVariable Integer sessionId) {
+        List<String> freePlaces = serviceTicket.findFreePlaces(sessionId);
+        if (freePlaces.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
         }
-        return ResponseEntity.ok(sessionTickets);
+        return ResponseEntity.ok(freePlaces);
+
     }
 }

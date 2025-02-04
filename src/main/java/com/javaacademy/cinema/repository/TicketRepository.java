@@ -45,6 +45,18 @@ public class TicketRepository {
         jdbcTemplate.update(sql, ticketId);
     }
 
+    public List<String> findFreePlaces(Integer sessionId) {
+        String sql = """
+                    select p.number
+                    from place p
+                    where p.id not in (
+                        select t.place_id from ticket t where t.session_id = ? and t.is_bought = true
+                    )
+                    order by p.id;
+                """;
+        return jdbcTemplate.queryForList(sql, String.class, sessionId);
+    }
+
     public List<Ticket> findTicketsBoughtTrue(Integer sessionId) {
         String sql = "select * from ticket where session_id = ? and is_bought = true";
         return jdbcTemplate.query(sql, this::mapToTicket, sessionId);
@@ -53,6 +65,25 @@ public class TicketRepository {
     public List<Ticket> findTicketsBoughtFalse(Integer sessionId) {
         String sql = "select * from ticket where session_id = ? and is_bought = false";
         return jdbcTemplate.query(sql, this::mapToTicket, sessionId);
+    }
+
+    public List<Ticket> findAllTickets() {
+        String sql = """
+                    select t.*,
+                        p.number as place_number,
+                        s.movie_id,
+                        s.price,
+                        s.date_time,
+                        m.name as movie_name,
+                        m.description as movie_description
+                    from ticket t
+                        join place p on t.place_id = p.id
+                        join session s on t.session_id = s.id
+                        left join movie m on s.movie_id = m.id
+                    where t.is_bought = true
+                    order by t.id;
+                """;
+        return jdbcTemplate.query(sql, this::mapToTicketId);
     }
 
     public Optional<Ticket> findById(Integer id) {
@@ -73,34 +104,44 @@ public class TicketRepository {
 
     public TicketResponseDto bookTicket(Integer sessionId, String placeName)
             throws TicketAlreadyBookedException, EntityNotFoundException {
-        String sql = "SELECT id, is_bought FROM ticket WHERE session_id = ? AND place_name = ?";
+        String sql = """
+                select t.id, t.is_bought
+                from ticket t
+                join place p on t.place_id = p.id
+                where t.session_id = ? and p.number = ?
+                """;
         try {
-            Ticket ticket = jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-                Ticket t = new Ticket();
-                t.setId(rs.getInt("id"));
-                t.setIsBought(rs.getBoolean("is_bought"));
-                return t;
-            }, sessionId, placeName);
+            Ticket ticket = jdbcTemplate.queryForObject(sql,
+                    this::mapToTicketId,
+                    sessionId,
+                    placeName);
             changeStatus(ticket.getId());
             String responseSql = """
-                    SELECT t.id, p.name AS place_name, m.name AS movie_name, s.date
+                    SELECT t.id, p.number AS place_name, m.name AS movie_name, s.date_time
                     FROM ticket t
                     JOIN place p ON t.place_id = p.id
                     JOIN session s ON t.session_id = s.id
                     JOIN movie m ON s.movie_id = m.id
                     WHERE t.id = ?""";
-            return jdbcTemplate.queryForObject(responseSql, (rs, rowNum) -> {
-                TicketResponseDto response = new TicketResponseDto();
-                response.setTicketId(rs.getInt("id"));
-                response.setPlaceName(rs.getString("place_name"));
-                response.setMovieName(rs.getString("movie_name"));
-                response.setDate(rs.getTimestamp("date").toLocalDateTime());
-                return response;
-            }, ticket.getId());
-
+            return jdbcTemplate.queryForObject(responseSql, this::mapToTicketDto, ticket.getId());
         } catch (EmptyResultDataAccessException e) {
             throw new TicketAlreadyBookedException("Билет не найден");
         }
+    }
+
+    private Ticket mapToTicketId(ResultSet rs, int rowNum) throws SQLException {
+        Ticket ticket = new Ticket();
+        ticket.setId(rs.getInt("id"));
+        return ticket;
+    }
+
+    private TicketResponseDto mapToTicketDto(ResultSet rs, int rowNum) throws SQLException {
+        TicketResponseDto response = new TicketResponseDto();
+        response.setTicketId(rs.getInt("id"));
+        response.setPlaceName(rs.getString("place_name"));
+        response.setMovieName(rs.getString("movie_name"));
+        response.setDate(rs.getTimestamp("date").toLocalDateTime());
+        return response;
     }
 
     private Ticket mapToTicket(ResultSet rs, int rowNum) throws SQLException {

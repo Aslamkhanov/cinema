@@ -38,6 +38,16 @@ public class ServiceTicketImpl implements ServiceTicket {
     }
 
     @Override
+    public List<String> findFreePlaces(Integer sessionId) {
+        return repository.findFreePlaces(sessionId);
+    }
+
+    @Override
+    public List<Ticket> findAllTickets() {
+        return repository.findAllTickets();
+    }
+
+    @Override
     public List<TicketDto> findTicketsBoughtTrue(Integer sessionId) {
         return repository.findTicketsBoughtTrue(sessionId).stream()
                 .map(mapperTicket::convertTicketDto)
@@ -64,7 +74,8 @@ public class ServiceTicketImpl implements ServiceTicket {
     }
 
     @Override
-    public TicketResponseDto bookTicket(Integer sessionId, String placeName) throws TicketAlreadyBookedException {
+    public TicketResponseDto bookTicket(Integer sessionId, String placeName)
+            throws TicketAlreadyBookedException {
         try {
             return repository.bookTicket(sessionId, placeName);
         } catch (EntityNotFoundException e) {
