@@ -73,7 +73,7 @@ public class ServiceTicketImpl implements ServiceTicket {
     public Optional<Ticket> findById(Integer id) {
         return repository.findById(id);
     }
-
+    @Override
     public List<TicketDto> createTicketForSession(SessionDto sessionDto) throws EntityNotFoundException {
         List<Place> places = placeRepository.findAllPlaces();
         if (places.isEmpty()) {
@@ -81,14 +81,15 @@ public class ServiceTicketImpl implements ServiceTicket {
         }
         List<TicketDto> newTickets = new ArrayList<>();
         Session currentSession = mapperSession.toEntitySession(sessionDto);
-
+        currentSession.setId(sessionDto.getId());
         for (Place place : places) {
-            Ticket tickets = Ticket.builder()
+            Ticket newTicket = Ticket.builder()
                     .session(currentSession)
                     .place(place)
                     .isBought(false)
                     .build();
-            Ticket ticket = repository.createTicket(tickets);
+            Ticket ticket = repository.createTicket(newTicket);
+            ticket.getSession().setId(currentSession.getId());
             newTickets.add(mapperTicket.convertTicketDto(ticket));
         }
         return newTickets;

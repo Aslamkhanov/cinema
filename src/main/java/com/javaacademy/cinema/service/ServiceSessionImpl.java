@@ -24,6 +24,9 @@ public class ServiceSessionImpl implements ServiceSession {
     public SessionDto saveSession(SessionDto sessionDto) throws EntityNotFoundException {
         Session session = mapperSession.toEntitySession(sessionDto);
         Session newSession = repository.saveSession(session);
+        if (newSession.getId() == null) {
+            throw new RuntimeException("Ошибка сохранения сеанса: ID не был установлен");
+        }
         return mapperSession.toSessionDto(newSession);
     }
 
