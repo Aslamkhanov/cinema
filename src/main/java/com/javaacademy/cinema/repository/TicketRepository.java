@@ -95,12 +95,12 @@ public class TicketRepository {
         }
     }
 
-    public void createTicketsForSession(Integer sessionId, List<Place> places) {
-        String sql = "INSERT INTO ticket (place_id, session_id, is_bought) VALUES (?, ?, false)";
-        for (Place place : places) {
-            jdbcTemplate.update(sql, place.getId(), sessionId);
-        }
-    }
+//    public void createTicketsForSession(Integer sessionId, List<Place> places) {
+//        String sql = "INSERT INTO ticket (place_id, session_id, is_bought) VALUES (?, ?, false)";
+//        for (Place place : places) {
+//            jdbcTemplate.update(sql, place.getId(), sessionId);
+//        }
+//    }
 
     public TicketResponseDto bookTicket(Integer sessionId, String placeName)
             throws TicketAlreadyBookedException, EntityNotFoundException {

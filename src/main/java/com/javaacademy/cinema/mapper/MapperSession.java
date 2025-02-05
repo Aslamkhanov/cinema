@@ -20,7 +20,7 @@ public class MapperSession {
                 .orElseThrow(() -> new EntityNotFoundException("Билет с id " + movieId + " не найден"));
         return Session.builder()
                 .movie(movie)
-                .dateTime(sessionDto.getDate())
+                .dateTime(sessionDto.getDateTime())
                 .price(sessionDto.getPrice())
                 .build();
     }
@@ -29,7 +29,7 @@ public class MapperSession {
         return SessionDto.builder()
                 .id(session.getId())
                 .movieId(session.getMovie().getId())
-                .date(session.getDateTime())
+                .dateTime(session.getDateTime())
                 .price(session.getPrice())
                 .build();
     }
@@ -38,7 +38,7 @@ public class MapperSession {
         return GetSessionDto.builder()
                 .id(session.getId())
                 .movieId(session.getMovie().getName())
-                .date(session.getDateTime())
+                .dateTime(session.getDateTime())
                 .price(session.getPrice())
                 .build();
     }

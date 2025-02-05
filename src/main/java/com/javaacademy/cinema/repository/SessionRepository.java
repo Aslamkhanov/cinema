@@ -19,7 +19,7 @@ public class SessionRepository {
     private final JdbcTemplate jdbcTemplate;
     private final MovieRepository movieRepository;
 
-    public Session createSession(Session session) {
+    public Session saveSession(Session session) {
         String sql = "insert into session (movie_id, date_time, price) values(?, ?, ?) returning id";
         Integer sessionId = jdbcTemplate.queryForObject(sql,
                 Integer.class,

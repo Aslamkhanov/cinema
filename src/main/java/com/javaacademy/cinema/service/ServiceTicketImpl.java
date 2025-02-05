@@ -1,17 +1,22 @@
 package com.javaacademy.cinema.service;
 
+import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.dto.TicketDto;
 import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.entity.Place;
+import com.javaacademy.cinema.entity.Session;
 import com.javaacademy.cinema.entity.Ticket;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
+import com.javaacademy.cinema.mapper.MapperSession;
 import com.javaacademy.cinema.mapper.MapperTicket;
+import com.javaacademy.cinema.repository.PlaceRepository;
 import com.javaacademy.cinema.repository.TicketRepository;
 import com.javaacademy.cinema.service.interfaces.ServiceTicket;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +26,8 @@ import java.util.stream.Collectors;
 public class ServiceTicketImpl implements ServiceTicket {
     private final TicketRepository repository;
     private final MapperTicket mapperTicket;
+    private final MapperSession mapperSession;
+    private final PlaceRepository placeRepository;
 
     @Override
     public Ticket createTicket(TicketDto ticketDto) {
@@ -54,7 +61,6 @@ public class ServiceTicketImpl implements ServiceTicket {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<TicketDto> findTicketsBoughtFalse(Integer sessionId) {
         return repository.findTicketsBoughtFalse(sessionId)
@@ -68,9 +74,24 @@ public class ServiceTicketImpl implements ServiceTicket {
         return repository.findById(id);
     }
 
-    @Override
-    public void createTicketsForSession(Integer sessionId, List<Place> places) {
-        repository.createTicketsForSession(sessionId, places);
+    public List<TicketDto> createTicketForSession(SessionDto sessionDto) throws EntityNotFoundException {
+        List<Place> places = placeRepository.findAllPlaces();
+        if (places.isEmpty()) {
+            throw new RuntimeException("Мест нет");
+        }
+        List<TicketDto> newTickets = new ArrayList<>();
+        Session currentSession = mapperSession.toEntitySession(sessionDto);
+
+        for (Place place : places) {
+            Ticket tickets = Ticket.builder()
+                    .session(currentSession)
+                    .place(place)
+                    .isBought(false)
+                    .build();
+            Ticket ticket = repository.createTicket(tickets);
+            newTickets.add(mapperTicket.convertTicketDto(ticket));
+        }
+        return newTickets;
     }
 
     @Override

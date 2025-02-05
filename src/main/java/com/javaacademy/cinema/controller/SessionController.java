@@ -2,12 +2,9 @@ package com.javaacademy.cinema.controller;
 
 import com.javaacademy.cinema.dto.GetSessionDto;
 import com.javaacademy.cinema.dto.SessionDto;
-import com.javaacademy.cinema.dto.TicketDto;
 import com.javaacademy.cinema.exception.AdminNotFoundException;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
-import com.javaacademy.cinema.mapper.MapperSession;
 import com.javaacademy.cinema.service.interfaces.ConfigService;
-import com.javaacademy.cinema.service.interfaces.ServicePlace;
 import com.javaacademy.cinema.service.interfaces.ServiceSession;
 import com.javaacademy.cinema.service.interfaces.ServiceTicket;
 import lombok.RequiredArgsConstructor;
@@ -28,13 +25,13 @@ public class SessionController {
 
     @PostMapping
     public ResponseEntity<?> createSession(@RequestBody SessionDto sessionDto,
-                                           @RequestHeader(value = "user-token") String token)
-            throws EntityNotFoundException {
+                                           @RequestHeader(value = "user-token") String token) {
         try {
             configService.admin(token);
-            serviceSession.createSessions(sessionDto);
+            SessionDto newSessionDto = serviceSession.saveSession(sessionDto);
+            serviceTicket.createTicketForSession(newSessionDto);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (AdminNotFoundException e) {
+        } catch (AdminNotFoundException | EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

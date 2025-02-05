@@ -1,9 +1,10 @@
 package com.javaacademy.cinema.service.interfaces;
 
+import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.dto.TicketDto;
 import com.javaacademy.cinema.dto.TicketResponseDto;
-import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.entity.Ticket;
+import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
 
 import java.util.List;
@@ -13,7 +14,9 @@ public interface ServiceTicket {
     Ticket createTicket(TicketDto ticketDto);
 
     void statusIsBought(Integer ticketId);
+
     List<String> findFreePlaces(Integer sessionId);
+
     List<Ticket> findAllTickets();
 
     List<TicketDto> findTicketsBoughtTrue(Integer sessionId);
@@ -22,7 +25,7 @@ public interface ServiceTicket {
 
     Optional<Ticket> findById(Integer id);
 
-    void createTicketsForSession(Integer sessionId, List<Place> places);
+    List<TicketDto> createTicketForSession(SessionDto sessionDto) throws EntityNotFoundException;
 
     TicketResponseDto bookTicket(Integer sessionId, String placeName) throws TicketAlreadyBookedException;
 }
