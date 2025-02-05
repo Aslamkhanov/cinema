@@ -5,7 +5,7 @@ import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.exception.AdminNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
 import com.javaacademy.cinema.service.interfaces.ConfigService;
-import com.javaacademy.cinema.service.interfaces.ServiceTicket;
+import com.javaacademy.cinema.service.interfaces.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/ticket")
 public class TicketController {
-    private final ServiceTicket serviceTicket;
+    private final TicketService ticketService;
     private final ConfigService configService;
 
     @GetMapping("/saled")
     public ResponseEntity<?> getAllBoughtTickets(@RequestHeader(value = "user-token") String token) {
         try {
             configService.admin(token);
-            return ResponseEntity.ok(serviceTicket.findAllTickets());
+            return ResponseEntity.ok(ticketService.selectAll());
         } catch (AdminNotFoundException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -31,7 +31,7 @@ public class TicketController {
     @PostMapping("/booking")
     public ResponseEntity<?> bookTicket(@RequestBody TicketRequestDto ticketRequestDto) {
         try {
-            TicketResponseDto response = serviceTicket.bookTicket(ticketRequestDto.getSessionId(),
+            TicketResponseDto response = ticketService.bookTicket(ticketRequestDto.getSessionId(),
                     ticketRequestDto.getPlaceName());
             return ResponseEntity.ok(response);
         } catch (TicketAlreadyBookedException e) {

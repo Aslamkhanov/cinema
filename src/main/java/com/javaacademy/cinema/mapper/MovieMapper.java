@@ -5,16 +5,15 @@ import com.javaacademy.cinema.entity.Movie;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MapperMovie {
-    public Movie convertMovie(MovieDto MovieDto) {
+public class MovieMapper {
+    public Movie toEntity(MovieDto MovieDto) {
         return Movie.builder()
                 .name(MovieDto.getName())
                 .description(MovieDto.getDescription())
                 .build();
     }
 
-
-    public MovieDto convertMovieDto(Movie movie) {
+    public MovieDto toDto(Movie movie) {
         return MovieDto.builder()
                 .id(movie.getId())
                 .name(movie.getName())

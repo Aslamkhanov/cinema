@@ -19,7 +19,7 @@ public class SessionRepository {
     private final JdbcTemplate jdbcTemplate;
     private final MovieRepository movieRepository;
 
-    public Session saveSession(Session session) {
+    public Session save(Session session) {
         String sql = "insert into session (movie_id, date_time, price) values(?, ?, ?) returning id";
         Integer sessionId = jdbcTemplate.queryForObject(sql,
                 Integer.class,
@@ -30,7 +30,7 @@ public class SessionRepository {
         return session;
     }
 
-    public List<Session> getAllSession() {
+    public List<Session> selectAll() {
         String sql = "select * from session";
         return jdbcTemplate.query(sql, this::mapToSession);
     }
@@ -51,8 +51,8 @@ public class SessionRepository {
         session.setPrice(rs.getBigDecimal("price"));
 
         if (rs.getString("movie_id") != null) {
-            Integer movieId =Integer.parseInt(rs.getString("movie_id"));
-           movieRepository.findById(movieId).ifPresent(session::setMovie);
+            Integer movieId = Integer.parseInt(rs.getString("movie_id"));
+            movieRepository.findById(movieId).ifPresent(session::setMovie);
         }
         return session;
     }

@@ -8,10 +8,10 @@ import com.javaacademy.cinema.exception.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-public interface ServiceSession {
-    SessionDto saveSession(SessionDto sessionDto) throws EntityNotFoundException;
+public interface SessionService {
+    SessionDto save(SessionDto sessionDto) throws EntityNotFoundException;
 
-    List<GetSessionDto> getAllSession();
+    List<GetSessionDto> selectAll();
 
     Optional<Session> findById(Integer id);
 }

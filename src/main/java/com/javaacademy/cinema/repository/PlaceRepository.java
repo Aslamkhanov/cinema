@@ -18,7 +18,7 @@ import static java.util.Optional.empty;
 public class PlaceRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public List<Place> findAllPlaces() {
+    public List<Place> selectAll() {
         String sql = "select * from place";
         return jdbcTemplate.query(sql, this::mapToPlace);
     }

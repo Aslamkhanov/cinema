@@ -8,11 +8,11 @@ import com.javaacademy.cinema.entity.Session;
 import com.javaacademy.cinema.entity.Ticket;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
-import com.javaacademy.cinema.mapper.MapperSession;
-import com.javaacademy.cinema.mapper.MapperTicket;
+import com.javaacademy.cinema.mapper.SessionMapper;
+import com.javaacademy.cinema.mapper.TicketMapper;
 import com.javaacademy.cinema.repository.PlaceRepository;
 import com.javaacademy.cinema.repository.TicketRepository;
-import com.javaacademy.cinema.service.interfaces.ServiceTicket;
+import com.javaacademy.cinema.service.interfaces.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +23,20 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class ServiceTicketImpl implements ServiceTicket {
+public class TicketServiceImpl implements TicketService {
     private final TicketRepository repository;
-    private final MapperTicket mapperTicket;
-    private final MapperSession mapperSession;
+    private final TicketMapper ticketMapper;
+    private final SessionMapper sessionMapper;
     private final PlaceRepository placeRepository;
 
     @Override
-    public Ticket createTicket(TicketDto ticketDto) {
-        Ticket ticket = mapperTicket.convertTicket(ticketDto);
-        return repository.createTicket(ticket);
+    public Ticket save(TicketDto ticketDto) {
+        Ticket ticket = ticketMapper.toEntity(ticketDto);
+        return repository.save(ticket);
     }
 
     @Override
-    public void statusIsBought(Integer ticketId) {
+    public void changeStatus(Integer ticketId) {
         try {
             repository.changeStatus(ticketId);
         } catch (TicketAlreadyBookedException | EntityNotFoundException e) {
@@ -45,27 +45,27 @@ public class ServiceTicketImpl implements ServiceTicket {
     }
 
     @Override
-    public List<String> findFreePlaces(Integer sessionId) {
-        return repository.findFreePlaces(sessionId);
+    public List<String> selectFreePlace(Integer sessionId) {
+        return repository.selectFreePlace(sessionId);
     }
 
     @Override
-    public List<Ticket> findAllTickets() {
-        return repository.findAllTickets();
+    public List<Ticket> selectAll() {
+        return repository.selectAll();
     }
 
     @Override
-    public List<TicketDto> findTicketsBoughtTrue(Integer sessionId) {
-        return repository.findTicketsBoughtTrue(sessionId).stream()
-                .map(mapperTicket::convertTicketDto)
+    public List<TicketDto> getSoldTickets(Integer sessionId) {
+        return repository.getSoldTickets(sessionId).stream()
+                .map(ticketMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<TicketDto> findTicketsBoughtFalse(Integer sessionId) {
-        return repository.findTicketsBoughtFalse(sessionId)
+    public List<TicketDto> getUnsoldTickets(Integer sessionId) {
+        return repository.getUnsoldTickets(sessionId)
                 .stream()
-                .map(mapperTicket::convertTicketDto)
+                .map(ticketMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -73,24 +73,28 @@ public class ServiceTicketImpl implements ServiceTicket {
     public Optional<Ticket> findById(Integer id) {
         return repository.findById(id);
     }
+
     @Override
     public List<TicketDto> createTicketForSession(SessionDto sessionDto) throws EntityNotFoundException {
-        List<Place> places = placeRepository.findAllPlaces();
+        List<Place> places = placeRepository.selectAll();
         if (places.isEmpty()) {
             throw new RuntimeException("Мест нет");
         }
         List<TicketDto> newTickets = new ArrayList<>();
-        Session currentSession = mapperSession.toEntitySession(sessionDto);
-        currentSession.setId(sessionDto.getId());
+        Session currentSession = sessionMapper.toEntity(sessionDto);
+        if (currentSession.getId() == null) {
+            throw new RuntimeException("Сеанс не был создан корректно");
+        }
         for (Place place : places) {
             Ticket newTicket = Ticket.builder()
                     .session(currentSession)
                     .place(place)
                     .isBought(false)
                     .build();
-            Ticket ticket = repository.createTicket(newTicket);
-            ticket.getSession().setId(currentSession.getId());
-            newTickets.add(mapperTicket.convertTicketDto(ticket));
+            Ticket ticket = repository.save(newTicket);
+            TicketDto newTicketDto = ticketMapper.toDto(ticket);
+            newTicketDto.getSession().setId(currentSession.getId());
+            newTickets.add(newTicketDto);
         }
         return newTickets;
     }

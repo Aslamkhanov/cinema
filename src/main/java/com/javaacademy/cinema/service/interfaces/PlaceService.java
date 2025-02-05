@@ -5,8 +5,8 @@ import com.javaacademy.cinema.entity.Place;
 import java.util.List;
 import java.util.Optional;
 
-public interface ServicePlace {
-    List<Place> findAllPlaces();
+public interface PlaceService {
+    List<Place> selectAll();
 
     Optional<Place> findById(Integer id);
 }

@@ -1,7 +1,6 @@
 package com.javaacademy.cinema.repository;
 
 import com.javaacademy.cinema.dto.TicketResponseDto;
-import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.entity.Ticket;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
@@ -24,7 +23,7 @@ public class TicketRepository {
     private final SessionRepository sessionRepository;
     private final PlaceRepository placeRepository;
 
-    public Ticket createTicket(Ticket ticket) {
+    public Ticket save(Ticket ticket) {
         String sql = "insert into ticket (place_id, session_id, is_bought) values(?, ?, ?) returning id";
         Integer ticketId = jdbcTemplate.queryForObject(sql,
                 Integer.class,
@@ -45,7 +44,7 @@ public class TicketRepository {
         jdbcTemplate.update(sql, ticketId);
     }
 
-    public List<String> findFreePlaces(Integer sessionId) {
+    public List<String> selectFreePlace(Integer sessionId) {
         String sql = """
                     select p.number
                     from place p
@@ -57,17 +56,17 @@ public class TicketRepository {
         return jdbcTemplate.queryForList(sql, String.class, sessionId);
     }
 
-    public List<Ticket> findTicketsBoughtTrue(Integer sessionId) {
+    public List<Ticket> getSoldTickets(Integer sessionId) {
         String sql = "select * from ticket where session_id = ? and is_bought = true";
         return jdbcTemplate.query(sql, this::mapToTicket, sessionId);
     }
 
-    public List<Ticket> findTicketsBoughtFalse(Integer sessionId) {
+    public List<Ticket> getUnsoldTickets(Integer sessionId) {
         String sql = "select * from ticket where session_id = ? and is_bought = false";
         return jdbcTemplate.query(sql, this::mapToTicket, sessionId);
     }
 
-    public List<Ticket> findAllTickets() {
+    public List<Ticket> selectAll() {
         String sql = """
                     select t.*,
                         p.number as place_number,
@@ -94,13 +93,6 @@ public class TicketRepository {
             return empty();
         }
     }
-
-//    public void createTicketsForSession(Integer sessionId, List<Place> places) {
-//        String sql = "INSERT INTO ticket (place_id, session_id, is_bought) VALUES (?, ?, false)";
-//        for (Place place : places) {
-//            jdbcTemplate.update(sql, place.getId(), sessionId);
-//        }
-//    }
 
     public TicketResponseDto bookTicket(Integer sessionId, String placeName)
             throws TicketAlreadyBookedException, EntityNotFoundException {
@@ -140,7 +132,7 @@ public class TicketRepository {
         response.setTicketId(rs.getInt("id"));
         response.setPlaceName(rs.getString("place_name"));
         response.setMovieName(rs.getString("movie_name"));
-        response.setDate(rs.getTimestamp("date").toLocalDateTime());
+        response.setDateTime(rs.getTimestamp("date_time").toLocalDateTime());
         return response;
     }
 

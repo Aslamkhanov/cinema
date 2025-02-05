@@ -18,7 +18,7 @@ import static java.util.Optional.empty;
 public class MovieRepository {
     private final JdbcTemplate jdbcTemplate;
 
-    public Movie createMovie(Movie movie) {
+    public Movie save(Movie movie) {
         String sql = "insert into movie (name, description) values(?, ?) returning id";
         Integer generatedId = jdbcTemplate.queryForObject(sql,
                 Integer.class,
@@ -28,7 +28,7 @@ public class MovieRepository {
         return movie;
     }
 
-    public List<Movie> getAllMovie() {
+    public List<Movie> selectAll() {
         String sql = "select * from movie";
         return jdbcTemplate.query(sql, this::mapToMovie);
     }

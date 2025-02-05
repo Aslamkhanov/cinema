@@ -10,18 +10,18 @@ import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
 import java.util.List;
 import java.util.Optional;
 
-public interface ServiceTicket {
-    Ticket createTicket(TicketDto ticketDto);
+public interface TicketService {
+    Ticket save(TicketDto ticketDto);
 
-    void statusIsBought(Integer ticketId);
+    void changeStatus(Integer ticketId);
 
-    List<String> findFreePlaces(Integer sessionId);
+    List<String> selectFreePlace(Integer sessionId);
 
-    List<Ticket> findAllTickets();
+    List<Ticket> selectAll();
 
-    List<TicketDto> findTicketsBoughtTrue(Integer sessionId);
+    List<TicketDto> getSoldTickets(Integer sessionId);
 
-    List<TicketDto> findTicketsBoughtFalse(Integer sessionId);
+    List<TicketDto> getUnsoldTickets(Integer sessionId);
 
     Optional<Ticket> findById(Integer id);
 

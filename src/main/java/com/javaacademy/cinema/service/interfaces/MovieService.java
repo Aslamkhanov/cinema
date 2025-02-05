@@ -5,10 +5,10 @@ import com.javaacademy.cinema.dto.MovieDto;
 import java.util.List;
 import java.util.Optional;
 
-public interface ServiceMovie {
-    MovieDto saveMovie(MovieDto MovieDto);
+public interface MovieService {
+    MovieDto save(MovieDto MovieDto);
 
-    List<MovieDto> getAllMovie();
+    List<MovieDto> selectAll();
 
     Optional<MovieDto> findById(Integer id);
 }

@@ -5,8 +5,8 @@ import com.javaacademy.cinema.entity.Ticket;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MapperTicket {
-    public Ticket convertTicket(TicketDto ticketDto) {
+public class TicketMapper {
+    public Ticket toEntity(TicketDto ticketDto) {
         return Ticket.builder()
                 .session(ticketDto.getSession())
                 .place(ticketDto.getPlace())
@@ -14,7 +14,7 @@ public class MapperTicket {
                 .build();
     }
 
-    public TicketDto convertTicketDto(Ticket ticket) {
+    public TicketDto toDto(Ticket ticket) {
         return TicketDto.builder()
                 .session(ticket.getSession())
                 .place(ticket.getPlace())
