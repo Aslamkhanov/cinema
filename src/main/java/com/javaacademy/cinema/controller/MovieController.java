@@ -1,7 +1,7 @@
 package com.javaacademy.cinema.controller;
 
 import com.javaacademy.cinema.dto.MovieDto;
-import com.javaacademy.cinema.exception.AdminNotFoundException;
+import com.javaacademy.cinema.exception.ForbiddenAccessException;
 import com.javaacademy.cinema.service.interfaces.ConfigService;
 import com.javaacademy.cinema.service.interfaces.MovieService;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +22,10 @@ public class MovieController {
     public ResponseEntity<?> createMovie(@RequestBody MovieDto movieDto,
                                          @RequestHeader(value = "user-token") String token) {
         try {
-            configService.admin(token);
+            configService.checkIsAdmin(token);
             MovieDto savedMovie = movieService.save(movieDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedMovie);
-        } catch (AdminNotFoundException e) {
+        } catch (ForbiddenAccessException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

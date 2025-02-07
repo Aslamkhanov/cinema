@@ -1,7 +1,7 @@
 package com.javaacademy.cinema.service;
 
 import com.javaacademy.cinema.config.ConfigProperty;
-import com.javaacademy.cinema.exception.AdminNotFoundException;
+import com.javaacademy.cinema.exception.ForbiddenAccessException;
 import com.javaacademy.cinema.service.interfaces.ConfigService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 public class ConfigServiceImpl implements ConfigService {
     private final ConfigProperty configProperty;
 
-    public void admin(String token) throws AdminNotFoundException {
+    public void checkIsAdmin(String token) throws ForbiddenAccessException {
         if (!configProperty.getToken().equals(token)) {
-            throw new AdminNotFoundException("Нет прав доступа, авторизуйтесь как администратор");
+            throw new ForbiddenAccessException("Нет прав доступа, авторизуйтесь как администратор");
         }
     }
 }

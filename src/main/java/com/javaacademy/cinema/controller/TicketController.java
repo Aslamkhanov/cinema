@@ -2,7 +2,7 @@ package com.javaacademy.cinema.controller;
 
 import com.javaacademy.cinema.dto.TicketRequestDto;
 import com.javaacademy.cinema.dto.TicketResponseDto;
-import com.javaacademy.cinema.exception.AdminNotFoundException;
+import com.javaacademy.cinema.exception.ForbiddenAccessException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
 import com.javaacademy.cinema.service.interfaces.ConfigService;
 import com.javaacademy.cinema.service.interfaces.TicketService;
@@ -21,9 +21,9 @@ public class TicketController {
     @GetMapping("/saled")
     public ResponseEntity<?> getAllBoughtTickets(@RequestHeader(value = "user-token") String token) {
         try {
-            configService.admin(token);
+            configService.checkIsAdmin(token);
             return ResponseEntity.ok(ticketService.selectAll());
-        } catch (AdminNotFoundException e) {
+        } catch (ForbiddenAccessException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }

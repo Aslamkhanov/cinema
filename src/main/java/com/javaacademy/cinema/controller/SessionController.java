@@ -1,7 +1,7 @@
 package com.javaacademy.cinema.controller;
 
 import com.javaacademy.cinema.dto.SessionDto;
-import com.javaacademy.cinema.exception.AdminNotFoundException;
+import com.javaacademy.cinema.exception.ForbiddenAccessException;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.service.interfaces.ConfigService;
 import com.javaacademy.cinema.service.interfaces.SessionService;
@@ -26,11 +26,11 @@ public class SessionController {
     public ResponseEntity<?> createSession(@RequestBody SessionDto sessionDto,
                                            @RequestHeader(value = "user-token") String token) {
         try {
-            configService.admin(token);
+            configService.checkIsAdmin(token);
             SessionDto newSessionDto = sessionService.save(sessionDto);
             ticketService.createTicketForSession(newSessionDto);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (AdminNotFoundException e) {
+        } catch (ForbiddenAccessException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

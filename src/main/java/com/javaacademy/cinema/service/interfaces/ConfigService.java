@@ -1,7 +1,7 @@
 package com.javaacademy.cinema.service.interfaces;
 
-import com.javaacademy.cinema.exception.AdminNotFoundException;
+import com.javaacademy.cinema.exception.ForbiddenAccessException;
 
 public interface ConfigService {
-    public void admin(String token) throws AdminNotFoundException;
+    public void checkIsAdmin(String token) throws ForbiddenAccessException;
 }
