@@ -6,8 +6,7 @@ import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.entity.Session;
 import com.javaacademy.cinema.entity.Ticket;
-import com.javaacademy.cinema.exception.EntityNotFoundException;
-import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
+import com.javaacademy.cinema.entity.TicketResponse;
 import com.javaacademy.cinema.mapper.SessionMapper;
 import com.javaacademy.cinema.mapper.TicketMapper;
 import com.javaacademy.cinema.repository.PlaceRepository;
@@ -36,12 +35,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void changeStatus(Integer ticketId) {
-        try {
-            repository.changeStatus(ticketId);
-        } catch (TicketAlreadyBookedException | EntityNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public void buyTicket(Integer ticketId) {
+        repository.buyTicket(ticketId);
     }
 
     @Override
@@ -75,16 +70,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<TicketDto> createTicketForSession(SessionDto sessionDto) throws EntityNotFoundException {
+    public List<TicketDto> createTicketForSession(SessionDto sessionDto) {
         List<Place> places = placeRepository.selectAll();
         if (places.isEmpty()) {
             throw new RuntimeException("Мест нет");
         }
         List<TicketDto> newTickets = new ArrayList<>();
         Session currentSession = sessionMapper.toEntity(sessionDto);
-        if (currentSession.getId() == null) {
-            throw new RuntimeException("Сеанс не был создан корректно");
-        }
         for (Place place : places) {
             Ticket newTicket = Ticket.builder()
                     .session(currentSession)
@@ -100,12 +92,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public TicketResponseDto bookTicket(Integer sessionId, String placeName)
-            throws TicketAlreadyBookedException {
-        try {
-            return repository.bookTicket(sessionId, placeName);
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    public TicketResponseDto bookTicket(Integer sessionId, String placeName) {
+        TicketResponse ticketResponse = repository.bookTicket(sessionId, placeName);
+        return ticketMapper.toResponseDto(ticketResponse);
     }
 }

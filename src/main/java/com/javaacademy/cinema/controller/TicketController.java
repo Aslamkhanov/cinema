@@ -35,7 +35,7 @@ public class TicketController {
                     ticketRequestDto.getPlaceName());
             return ResponseEntity.ok(response);
         } catch (TicketAlreadyBookedException e) {
-            return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
     }
 }

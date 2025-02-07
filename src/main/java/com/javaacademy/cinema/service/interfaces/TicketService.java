@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface TicketService {
     Ticket save(TicketDto ticketDto);
 
-    void changeStatus(Integer ticketId);
+    void buyTicket(Integer ticketId);
 
     List<String> selectFreePlace(Integer sessionId);
 

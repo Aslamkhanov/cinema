@@ -1,6 +1,5 @@
 package com.javaacademy.cinema.mapper;
 
-import com.javaacademy.cinema.dto.GetSessionDto;
 import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.entity.Movie;
 import com.javaacademy.cinema.entity.Session;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class SessionMapper {
     private final MovieRepository movieRepository;
 
-    public Session toEntity(SessionDto sessionDto) throws EntityNotFoundException {
+    public Session toEntity(SessionDto sessionDto) {
         Integer movieId = sessionDto.getMovieId();
         Movie movie = movieRepository.findById(sessionDto.getMovieId())
                 .orElseThrow(() -> new EntityNotFoundException("Билет с id " + movieId + " не найден"));
@@ -30,15 +29,6 @@ public class SessionMapper {
         return SessionDto.builder()
                 .id(session.getId())
                 .movieId(session.getMovie().getId())
-                .dateTime(session.getDateTime())
-                .price(session.getPrice())
-                .build();
-    }
-
-    public GetSessionDto toGetSessionDto(Session session) {
-        return GetSessionDto.builder()
-                .id(session.getId())
-                .movieId(session.getMovie().getName())
                 .dateTime(session.getDateTime())
                 .price(session.getPrice())
                 .build();

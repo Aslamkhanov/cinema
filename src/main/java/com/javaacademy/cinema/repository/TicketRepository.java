@@ -1,7 +1,7 @@
 package com.javaacademy.cinema.repository;
 
-import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.entity.Ticket;
+import com.javaacademy.cinema.entity.TicketResponse;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class TicketRepository {
         return ticket;
     }
 
-    public void changeStatus(Integer ticketId) throws EntityNotFoundException, TicketAlreadyBookedException {
+    public void buyTicket(Integer ticketId) {
         Ticket ticket = findById(ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Билет с id " + ticketId + " не найден"));
         if (ticket.getIsBought()) {
@@ -68,21 +68,11 @@ public class TicketRepository {
 
     public List<Ticket> selectAll() {
         String sql = """
-                    select t.*,
-                        p.number as place_number,
-                        s.movie_id,
-                        s.price,
-                        s.date_time,
-                        m.name as movie_name,
-                        m.description as movie_description
-                    from ticket t
-                        join place p on t.place_id = p.id
-                        join session s on t.session_id = s.id
-                        left join movie m on s.movie_id = m.id
-                    where t.is_bought = true
-                    order by t.id;
+                   select *
+                   from ticket
+                   where is_bought = true
                 """;
-        return jdbcTemplate.query(sql, this::mapToTicketId);
+        return jdbcTemplate.query(sql, this::mapToTicket);
     }
 
     public Optional<Ticket> findById(Integer id) {
@@ -94,8 +84,7 @@ public class TicketRepository {
         }
     }
 
-    public TicketResponseDto bookTicket(Integer sessionId, String placeName)
-            throws TicketAlreadyBookedException, EntityNotFoundException {
+    public TicketResponse bookTicket(Integer sessionId, String placeName) {
         String sql = """
                 select t.id, t.is_bought
                 from ticket t
@@ -104,10 +93,10 @@ public class TicketRepository {
                 """;
         try {
             Ticket ticket = jdbcTemplate.queryForObject(sql,
-                    this::mapToTicketId,
+                    this::mapToTicket,
                     sessionId,
                     placeName);
-            changeStatus(ticket.getId());
+            buyTicket(ticket.getId());
             String responseSql = """
                     SELECT t.id, p.number AS place_name, m.name AS movie_name, s.date_time
                     FROM ticket t
@@ -115,20 +104,14 @@ public class TicketRepository {
                     JOIN session s ON t.session_id = s.id
                     JOIN movie m ON s.movie_id = m.id
                     WHERE t.id = ?""";
-            return jdbcTemplate.queryForObject(responseSql, this::mapToTicketDto, ticket.getId());
+            return jdbcTemplate.queryForObject(responseSql, this::mapToResponse, ticket.getId());
         } catch (EmptyResultDataAccessException e) {
             throw new TicketAlreadyBookedException("Билет не найден");
         }
     }
 
-    private Ticket mapToTicketId(ResultSet rs, int rowNum) throws SQLException {
-        Ticket ticket = new Ticket();
-        ticket.setId(rs.getInt("id"));
-        return ticket;
-    }
-
-    private TicketResponseDto mapToTicketDto(ResultSet rs, int rowNum) throws SQLException {
-        TicketResponseDto response = new TicketResponseDto();
+    private TicketResponse mapToResponse(ResultSet rs, int rowNum) throws SQLException {
+        TicketResponse response = new TicketResponse();
         response.setTicketId(rs.getInt("id"));
         response.setPlaceName(rs.getString("place_name"));
         response.setMovieName(rs.getString("movie_name"));

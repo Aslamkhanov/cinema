@@ -1,4 +1,4 @@
-package com.javaacademy.cinema.dto;
+package com.javaacademy.cinema.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,18 +7,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-@Data
-@NoArgsConstructor
+
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Builder
-public class GetSessionDto {
-    private Integer id;
+public class TicketResponse {
+    @JsonProperty("ticket_id")
+    private Integer ticketId;
+    @JsonProperty("place_name")
+    private String placeName;
     @JsonProperty("movie_name")
-    private String movieId;
+    private String movieName;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("date_time")
     private LocalDateTime dateTime;
-    private BigDecimal price;
 }

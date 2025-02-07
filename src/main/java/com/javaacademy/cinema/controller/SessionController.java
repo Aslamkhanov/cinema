@@ -1,6 +1,5 @@
 package com.javaacademy.cinema.controller;
 
-import com.javaacademy.cinema.dto.GetSessionDto;
 import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.exception.AdminNotFoundException;
 import com.javaacademy.cinema.exception.EntityNotFoundException;
@@ -31,13 +30,15 @@ public class SessionController {
             SessionDto newSessionDto = sessionService.save(sessionDto);
             ticketService.createTicketForSession(newSessionDto);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (AdminNotFoundException | EntityNotFoundException e) {
+        } catch (AdminNotFoundException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<GetSessionDto>> getAllSession() {
+    public ResponseEntity<List<SessionDto>> getAllSession() {
         return ResponseEntity.ok(sessionService.selectAll());
     }
 
