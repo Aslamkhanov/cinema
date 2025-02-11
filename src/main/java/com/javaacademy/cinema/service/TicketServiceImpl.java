@@ -35,18 +35,16 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void buyTicket(Integer ticketId) {
-        repository.buyTicket(ticketId);
-    }
-
-    @Override
     public List<String> selectFreePlace(Integer sessionId) {
         return repository.selectFreePlace(sessionId);
     }
 
     @Override
-    public List<Ticket> selectAll() {
-        return repository.selectAll();
+    public List<TicketDto> selectAll() {
+        return repository.selectAll()
+                .stream()
+                .map(ticketMapper::toDto)
+                .toList();
     }
 
     @Override

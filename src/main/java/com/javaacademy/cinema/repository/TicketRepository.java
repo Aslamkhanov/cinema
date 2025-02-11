@@ -34,7 +34,7 @@ public class TicketRepository {
         return ticket;
     }
 
-    public void buyTicket(Integer ticketId) {
+    private void buyTicket(Integer ticketId) {
         Ticket ticket = findById(ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Билет с id " + ticketId + " не найден"));
         if (ticket.getIsBought()) {

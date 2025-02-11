@@ -13,11 +13,9 @@ import java.util.Optional;
 public interface TicketService {
     Ticket save(TicketDto ticketDto);
 
-    void buyTicket(Integer ticketId);
-
     List<String> selectFreePlace(Integer sessionId);
 
-    List<Ticket> selectAll();
+    List<TicketDto> selectAll();
 
     List<TicketDto> getSoldTickets(Integer sessionId);
 
