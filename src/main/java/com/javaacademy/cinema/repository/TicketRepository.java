@@ -91,7 +91,6 @@ public class TicketRepository {
                 join place p on t.place_id = p.id
                 where t.session_id = ? and p.number = ?
                 """;
-
         Ticket ticket = jdbcTemplate.queryForObject(sql,
                 this::mapToTicket,
                 sessionId,

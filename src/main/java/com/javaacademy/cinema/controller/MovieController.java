@@ -2,8 +2,8 @@ package com.javaacademy.cinema.controller;
 
 import com.javaacademy.cinema.dto.MovieDto;
 import com.javaacademy.cinema.exception.ForbiddenAccessException;
-import com.javaacademy.cinema.service.interfaces.SecurityService;
 import com.javaacademy.cinema.service.interfaces.MovieService;
+import com.javaacademy.cinema.service.interfaces.SecurityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -102,9 +102,10 @@ public class TicketControllerTest {
         assertEquals(PLACE_NAME, ticketResponseDto.getPlaceName());
         assertEquals(SESSION_TEST_LOCAL_DATE_TIME, ticketResponseDto.getDateTime());
     }
+
     @Test
     @DisplayName("Ошибка при попытке купить уже купленный билет")
-    public  void bookTicketConflict() {
+    public void bookTicketConflict() {
         MovieDto movieDto = MovieDto.builder()
                 .name(MOVIE_NAME)
                 .description(MOVIE_DESCRIPTION)
@@ -158,7 +159,7 @@ public class TicketControllerTest {
         ticketService.save(ticketDto);
         TicketRequestDto dto = new TicketRequestDto(newSessionDto.getId(), PLACE_NAME);
 
-       given(requestSpecification)
+        given(requestSpecification)
                 .body(dto)
                 .post("/booking")
                 .then()
