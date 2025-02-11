@@ -38,7 +38,7 @@ public class TicketRepository {
         Ticket ticket = findById(ticketId)
                 .orElseThrow(() -> new EntityNotFoundException("Билет с id " + ticketId + " не найден"));
         if (ticket.getIsBought()) {
-            throw new TicketAlreadyBookedException("Билет уже куплен");
+            throw new TicketAlreadyBookedException();
         }
         String sql = "update ticket set is_bought = true where id = ?";
         jdbcTemplate.update(sql, ticketId);
@@ -86,28 +86,26 @@ public class TicketRepository {
 
     public TicketResponse bookTicket(Integer sessionId, String placeName) {
         String sql = """
-                select t.id, t.is_bought
+                select t.id, t.is_bought, t.session_id, t.place_id
                 from ticket t
                 join place p on t.place_id = p.id
                 where t.session_id = ? and p.number = ?
                 """;
-        try {
-            Ticket ticket = jdbcTemplate.queryForObject(sql,
-                    this::mapToTicket,
-                    sessionId,
-                    placeName);
-            buyTicket(ticket.getId());
-            String responseSql = """
-                    SELECT t.id, p.number AS place_name, m.name AS movie_name, s.date_time
-                    FROM ticket t
-                    JOIN place p ON t.place_id = p.id
-                    JOIN session s ON t.session_id = s.id
-                    JOIN movie m ON s.movie_id = m.id
-                    WHERE t.id = ?""";
-            return jdbcTemplate.queryForObject(responseSql, this::mapToResponse, ticket.getId());
-        } catch (EmptyResultDataAccessException e) {
-            throw new TicketAlreadyBookedException("Билет не найден");
-        }
+
+        Ticket ticket = jdbcTemplate.queryForObject(sql,
+                this::mapToTicket,
+                sessionId,
+                placeName);
+        buyTicket(ticket.getId());
+        String responseSql = """
+                SELECT t.id, p.number AS place_name, m.name AS movie_name, s.date_time, s.id AS session_id
+                FROM ticket t
+                JOIN place p ON t.place_id = p.id
+                JOIN session s ON t.session_id = s.id
+                JOIN movie m ON s.movie_id = m.id
+                WHERE t.id = ?
+                """;
+        return jdbcTemplate.queryForObject(responseSql, this::mapToResponse, ticket.getId());
     }
 
     private TicketResponse mapToResponse(ResultSet rs, int rowNum) throws SQLException {

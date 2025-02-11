@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Data
-public class ConfigProperty {
+public class SecurityProperty {
     @Value("${app.admin.token}")
     private String token;
 }

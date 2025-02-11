@@ -2,7 +2,7 @@ package com.javaacademy.cinema.controller;
 
 import com.javaacademy.cinema.dto.MovieDto;
 import com.javaacademy.cinema.exception.ForbiddenAccessException;
-import com.javaacademy.cinema.service.interfaces.ConfigService;
+import com.javaacademy.cinema.service.interfaces.SecurityService;
 import com.javaacademy.cinema.service.interfaces.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,17 +16,17 @@ import java.util.List;
 @RequestMapping("/movie")
 public class MovieController {
     private final MovieService movieService;
-    private final ConfigService configService;
+    private final SecurityService securityService;
 
     @PostMapping
     public ResponseEntity<?> createMovie(@RequestBody MovieDto movieDto,
                                          @RequestHeader(value = "user-token") String token) {
         try {
-            configService.checkIsAdmin(token);
+            securityService.checkIsAdmin(token);
             MovieDto savedMovie = movieService.save(movieDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedMovie);
         } catch (ForbiddenAccessException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 

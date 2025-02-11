@@ -4,7 +4,7 @@ import com.javaacademy.cinema.dto.TicketRequestDto;
 import com.javaacademy.cinema.dto.TicketResponseDto;
 import com.javaacademy.cinema.exception.ForbiddenAccessException;
 import com.javaacademy.cinema.exception.TicketAlreadyBookedException;
-import com.javaacademy.cinema.service.interfaces.ConfigService;
+import com.javaacademy.cinema.service.interfaces.SecurityService;
 import com.javaacademy.cinema.service.interfaces.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/ticket")
 public class TicketController {
     private final TicketService ticketService;
-    private final ConfigService configService;
+    private final SecurityService securityService;
 
     @GetMapping("/saled")
     public ResponseEntity<?> getAllBoughtTickets(@RequestHeader(value = "user-token") String token) {
         try {
-            configService.checkIsAdmin(token);
+            securityService.checkIsAdmin(token);
             return ResponseEntity.ok(ticketService.selectAll());
         } catch (ForbiddenAccessException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
