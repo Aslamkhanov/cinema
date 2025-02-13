@@ -1,0 +1,13 @@
+server:
+  port: 8088
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cinema-test
+    username: postgres
+    password: MagaR223
+    driver-class-name: org.postgresql.Driver
+
+app:
+  admin:
+    token: secretadmin123

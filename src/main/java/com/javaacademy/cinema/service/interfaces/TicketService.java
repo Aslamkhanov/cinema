@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TicketService {
-    Ticket save(TicketDto ticketDto);
+    TicketDto save(TicketDto ticketDto);
 
     List<String> selectFreePlace(Integer sessionId);
 

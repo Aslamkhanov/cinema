@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MovieService {
-    MovieDto save(MovieDto MovieDto);
+    MovieDto save(MovieDto movieDto);
 
     List<MovieDto> selectAll();
 

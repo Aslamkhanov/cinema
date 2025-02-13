@@ -29,9 +29,10 @@ public class TicketServiceImpl implements TicketService {
     private final PlaceRepository placeRepository;
 
     @Override
-    public Ticket save(TicketDto ticketDto) {
+    public TicketDto save(TicketDto ticketDto) {
         Ticket ticket = ticketMapper.toEntity(ticketDto);
-        return repository.save(ticket);
+        Ticket newTicket = repository.save(ticket);
+        return ticketMapper.toDto(newTicket);
     }
 
     @Override

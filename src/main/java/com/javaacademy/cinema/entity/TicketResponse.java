@@ -16,10 +16,13 @@ import java.time.LocalDateTime;
 public class TicketResponse {
     @JsonProperty("ticket_id")
     private Integer ticketId;
+
     @JsonProperty("place_name")
     private String placeName;
+
     @JsonProperty("movie_name")
     private String movieName;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("date_time")
     private LocalDateTime dateTime;

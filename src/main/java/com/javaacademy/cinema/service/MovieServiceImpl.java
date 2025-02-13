@@ -19,8 +19,8 @@ public class MovieServiceImpl implements MovieService {
     private final MovieMapper movieMapper;
 
     @Override
-    public MovieDto save(MovieDto MovieDto) {
-        Movie movie = movieMapper.toEntity(MovieDto);
+    public MovieDto save(MovieDto movieDto) {
+        Movie movie = movieMapper.toEntity(movieDto);
         Movie saveMovie = movieRepository.save(movie);
         return movieMapper.toDto(saveMovie);
     }

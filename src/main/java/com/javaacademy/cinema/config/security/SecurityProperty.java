@@ -1,4 +1,4 @@
-package com.javaacademy.cinema.config;
+package com.javaacademy.cinema.config.security;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

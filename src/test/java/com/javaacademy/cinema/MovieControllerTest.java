@@ -1,6 +1,6 @@
 package com.javaacademy.cinema;
 
-import com.javaacademy.cinema.config.SecurityProperty;
+import com.javaacademy.cinema.config.security.SecurityProperty;
 import com.javaacademy.cinema.dto.MovieDto;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -9,9 +9,11 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -33,20 +35,28 @@ public class MovieControllerTest {
     private final static String USER_TOKEN = "user-token";
     private final static String MOVIE_NAME = "kino";
     private final static String MOVIE_DESCRIPTION = "info";
-    private final ResponseSpecification responseSpecification =
-            new ResponseSpecBuilder()
-                    .log(LogDetail.ALL)
-                    .build();
-    private final RequestSpecification requestSpecification =
-            new RequestSpecBuilder()
-                    .setBasePath("/movie")
-                    .setContentType(ContentType.JSON)
-                    .log(LogDetail.ALL)
-                    .build();
+    @Value("${server.port}")
+    int port;
+    private ResponseSpecification responseSpecification;
+    private RequestSpecification requestSpecification;
     @Autowired
     private SecurityProperty securityProperty;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    void setup() {
+        responseSpecification = new ResponseSpecBuilder()
+                .log(LogDetail.ALL)
+                .build();
+
+        requestSpecification = new RequestSpecBuilder()
+                .setPort(port)
+                .setBasePath("/movie")
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
+    }
 
     @Test
     @DisplayName("Успешное создания фильма")

@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MovieMapper {
-    public Movie toEntity(MovieDto MovieDto) {
+    public Movie toEntity(MovieDto movieDto) {
         return Movie.builder()
-                .name(MovieDto.getName())
-                .description(MovieDto.getDescription())
+                .name(movieDto.getName())
+                .description(movieDto.getDescription())
                 .build();
     }
 

@@ -1,6 +1,6 @@
 package com.javaacademy.cinema;
 
-import com.javaacademy.cinema.config.SecurityProperty;
+import com.javaacademy.cinema.config.security.SecurityProperty;
 import com.javaacademy.cinema.dto.*;
 import com.javaacademy.cinema.entity.Place;
 import com.javaacademy.cinema.mapper.SessionMapper;
@@ -14,9 +14,11 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -44,16 +46,10 @@ public class TicketControllerTest {
     private final static String USER_TOKEN = "user-token";
     private final static String MOVIE_NAME = "kino";
     private final static String MOVIE_DESCRIPTION = "info";
-    private final ResponseSpecification responseSpecification =
-            new ResponseSpecBuilder()
-                    .log(LogDetail.ALL)
-                    .build();
-    private final RequestSpecification requestSpecification =
-            new RequestSpecBuilder()
-                    .setBasePath("/ticket")
-                    .setContentType(ContentType.JSON)
-                    .log(LogDetail.ALL)
-                    .build();
+    @Value("${server.port}")
+    int port;
+    private ResponseSpecification responseSpecification;
+    private RequestSpecification requestSpecification;
     @Autowired
     private SecurityProperty securityProperty;
     @Autowired
@@ -66,6 +62,20 @@ public class TicketControllerTest {
     private TicketService ticketService;
     @Autowired
     private SessionMapper sessionMapper;
+
+    @BeforeEach
+    void setup() {
+        responseSpecification = new ResponseSpecBuilder()
+                .log(LogDetail.ALL)
+                .build();
+
+        requestSpecification = new RequestSpecBuilder()
+                .setPort(port)
+                .setBasePath("/ticket")
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
+    }
 
     @Test
     @DisplayName("Успешное купить билет")
@@ -84,7 +94,7 @@ public class TicketControllerTest {
 
         TicketDto ticketDto = TicketDto.builder()
                 .session(sessionMapper.toEntity(newSessionDto))
-                .place(new Place(11, "A1"))
+                .place(new Place(1, "A1"))
                 .isBought(false)
                 .build();
         ticketService.save(ticketDto);
@@ -120,7 +130,7 @@ public class TicketControllerTest {
 
         TicketDto ticketDto = TicketDto.builder()
                 .session(sessionMapper.toEntity(newSessionDto))
-                .place(new Place(11, "A1"))
+                .place(new Place(1, "A1"))
                 .isBought(true)
                 .build();
         ticketService.save(ticketDto);
@@ -153,7 +163,7 @@ public class TicketControllerTest {
 
         TicketDto ticketDto = TicketDto.builder()
                 .session(sessionMapper.toEntity(newSessionDto))
-                .place(new Place(11, "A1"))
+                .place(new Place(1, "A1"))
                 .isBought(false)
                 .build();
         ticketService.save(ticketDto);

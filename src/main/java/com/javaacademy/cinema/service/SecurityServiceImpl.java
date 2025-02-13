@@ -1,6 +1,6 @@
 package com.javaacademy.cinema.service;
 
-import com.javaacademy.cinema.config.SecurityProperty;
+import com.javaacademy.cinema.config.security.SecurityProperty;
 import com.javaacademy.cinema.exception.ForbiddenAccessException;
 import com.javaacademy.cinema.service.interfaces.SecurityService;
 import lombok.RequiredArgsConstructor;

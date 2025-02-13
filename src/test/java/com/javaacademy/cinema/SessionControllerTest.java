@@ -1,6 +1,6 @@
 package com.javaacademy.cinema;
 
-import com.javaacademy.cinema.config.SecurityProperty;
+import com.javaacademy.cinema.config.security.SecurityProperty;
 import com.javaacademy.cinema.dto.MovieDto;
 import com.javaacademy.cinema.dto.SessionDto;
 import com.javaacademy.cinema.service.interfaces.MovieService;
@@ -12,9 +12,11 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -42,16 +44,10 @@ public class SessionControllerTest {
     private final static String MOVIE_DESCRIPTION = "info";
     private final static String INVALID_TOKEN = "некорректный_токен";
     private final static Integer NON_EXISTENT_ID = 999999;
-    private final ResponseSpecification responseSpecification =
-            new ResponseSpecBuilder()
-                    .log(LogDetail.ALL)
-                    .build();
-    private final RequestSpecification requestSpecification =
-            new RequestSpecBuilder()
-                    .setBasePath("/session")
-                    .setContentType(ContentType.JSON)
-                    .log(LogDetail.ALL)
-                    .build();
+    @Value("${server.port}")
+    int port;
+    private ResponseSpecification responseSpecification;
+    private RequestSpecification requestSpecification;
     @Autowired
     private SecurityProperty securityProperty;
     @Autowired
@@ -60,6 +56,20 @@ public class SessionControllerTest {
     private MovieService movieService;
     @Autowired
     private SessionService sessionService;
+
+    @BeforeEach
+    void setup() {
+        responseSpecification = new ResponseSpecBuilder()
+                .log(LogDetail.ALL)
+                .build();
+
+        requestSpecification = new RequestSpecBuilder()
+                .setPort(port)
+                .setBasePath("/session")
+                .setContentType(ContentType.JSON)
+                .log(LogDetail.ALL)
+                .build();
+    }
 
     @Test
     @DisplayName("Успешное создания сессии")
